@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+	<mapper namespace = "com.vam.mapper.AuthorMapper">
+		
+		<!-- 작가 등록 -->
+		<insert id="authorEnroll">
+		
+			<selectKey keyProperty="authorId" order="BEFORE" resultType="int">
+				select id_seq.nextval from dual
+			</selectKey>
+			
+			insert into vam_author(
+				authorId
+				, authorName
+				, nationId
+				, authorIntro
+			) values(
+				#{authorId}
+				, #{authorName}
+				, #{nationId}
+				, #{authorIntro}
+		    )
+			
+		</insert>
+		
+		
+		
+		<!-- 작가 목록 -->
+		<select id="authorGetList" resultType ="com.vam.model.AuthorVO">
+				
+			<![CDATA[
+				select * from (
+					select /*+INDEX_DESC(vam_author SYS_C0011020)*/
+						rownum as rn, authorId, authorName, nationId, regDate, updateDate
+					from vam_author
+					where
+			]]>
+			
+				<if test="keyword != null">
+					 authorName like '%'||#{keyword}||'%' and
+				</if>
+			
+					rownum <![CDATA[<=]]> #{pageNum} * #{amount}
+				)
+				where rn <![CDATA[>]]> (#{pageNum} - 1) * #{amount}
+		
+		</select>
+		
+		
+		<select id="authorGetTotal" resultType="int">
+		
+			select count(*) from vam_author
+			
+			<if test="keyword != null">
+			
+				where authorName like '%' || #{keyword} || '%'
+					
+			</if>
+		
+		</select>
+		
+		
+		<select id="authorGetDetail" resultType="com.vam.model.AuthorVO">
+		
+			select * from vam_author where authorId = #{authorId}
+			
+		</select>
+		
+		
+		<update id="authorModify">
+		
+			update vam_author 
+			   set authorName = #{authorName}
+			       , nationId = #{nationId}
+			       , authorIntro = #{authorIntro}
+			       
+		      where authorId = #{authorId}
+			
+		</update>
+		
+		
+		<delete id="authorDelete">
+		
+			delete from vam_author where authorId = #{authorId}
+		
+		</delete>
+		
+	</mapper>

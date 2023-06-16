@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.vam.mapper.BookMapper">
+	
+	<sql id="criteria">
+		
+		<trim prefix="(" suffix=") AND" prefixOverrides="AND">
+			<foreach item="type" collection="typeArr">
+				<trim prefix="AND">
+					<choose>
+						<when test="type == 'A'.toString()">
+							<trim prefixOverrides="or">
+								<foreach collection="authorArr" item="authorId" >
+									<trim prefix="or">
+										authorId = #{authorId}
+									</trim>
+								</foreach>
+							</trim>
+						</when>
+						<when test="type == 'C'.toString()">
+							cateCode like '%' || #{cateCode} || '%'
+						</when>
+						<when test="type == 'T'.toString()">
+							bookName like '%' || #{keyword} || '%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+		
+	</sql>
+	
+	<select id="getGoodsList" resultType="com.vam.model.BookVO">
+	
+		select * from (
+			select <![CDATA[/*+INDEX_DESC(vam_book SYS_C0011315)*/]]> rownum as rn, bookId, bookName,
+		           (select authorName from vam_author where vam_book.authorId = vam_author.authorId) authorName, authorId,
+		           (select cateName from vam_bcate where vam_book.cateCode = vam_bcate.cateCode) cateName,cateCode, publisher, publeYear, bookPrice, bookDiscount  
+	          from vam_book
+	         where
+	        	   <include refid="criteria"></include>
+	        	   rownum <![CDATA[ <= ]]> #{pageNum} * #{amount}
+			)
+		where rn <![CDATA[ > ]]> (#{pageNum} -1) * #{amount} 
+	
+	</select>
+	
+	<select id="goodsGetTotal" resultType="int">
+		
+		select count(*) from vam_book
+		 where 
+		 	   <include refid="criteria"></include>
+		 	   bookId > 0
+		
+	</select>
+	
+	<select id="getAuthorIdList" resultType="String">
+	
+		select authorId from vam_author
+		 where authorName like '%' || #{keyword} || '%'
+	
+	</select>
+	
+		<!-- 국내 카테고리 리스트 -->
+	<select id="getCateCode1" resultType="com.vam.model.CateVO">
+	
+		
+			select * from vam_bcate where cateCode <![CDATA[>]]> 100000 and cateCode <![CDATA[<]]> 200000
+	</select>
+	
+	<!-- 외국 카테고리 리스트 -->
+	<select id="getCateCode2" resultType="com.vam.model.CateVO">
+	
+			select * from vam_bcate where cateCode <![CDATA[>]]> 200000 and cateCode <![CDATA[<]]> 300000
+	
+	</select>	
+	
+	
+	<select id="getCateList" resultType="String">
+	
+		select DISTINCT cateCode from vam_book where
+			<foreach item="type" collection="typeArr">
+				<choose>
+					<when test="type == 'A'.toString()">
+						<trim prefixOverrides="or">
+							<foreach collection="authorArr" item="authorId">
+								<trim prefix="or">
+									authorId = #{authorId}
+								</trim>
+							</foreach>
+						</trim>						
+					</when>
+					<when test="type=='T'.toString()">
+						bookName like '%' || #{keyword} || '%'
+					</when>
+				</choose>
+			</foreach>
+	</select>
+	
+	
+	<select id="getCateInfo" resultType="com.vam.model.CateFilterDTO">
+	
+		select DISTINCT count(*) cateCount, a.cateCode, b.cateName
+		  from vam_book a left join vam_bcate b on a.cateCode = b.cateCode
+		 where 
+		 <foreach item="type" collection="typeArr">
+		 	<choose>
+		 		<when test="type == 'A'.toString()">
+		 			<trim prefix="(" suffix=")" prefixOverrides="or">
+		 				<foreach collection="authorArr" item="authorId">
+		 					<trim prefix="or">
+		 						authorId = #{authorId}
+		 					</trim>
+		 				</foreach>
+		 			</trim>
+		 		</when>
+		 		<when test="type == 'T'.toString()">
+		 			bookName like '%' || #{keyword} || '%' and a.cateCode = #{cateCode}
+		 		</when>
+		 	</choose>
+		 </foreach>
+		group by a.cateCode, b.cateName
+	</select>
+	
+  </mapper>

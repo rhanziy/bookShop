@@ -1,0 +1,74 @@
+@charset "UTF-8";
+
+
+button {
+	border:none;
+	outline:none;
+}
+/* 제품 목록 네비 */
+.navi_bar_area{
+	width: 100%;
+    height: 30px;
+    margin:10px 0;
+    overflow: hidden;
+}
+
+.dropdown {
+  float: left;
+  height:100%;
+  overflow: hidden;
+  text-align:center;
+}
+
+.dropdown .dropbtn {
+  width:100px;
+  height:100%;
+  padding-left:10px;
+  background:white;
+  color: #404040;
+  font-size: 15px;
+  font-weight: bold;  
+  line-height:10px;
+  text-align:left;
+}
+
+.dropdown-content {
+  display:none;
+  position: absolute;
+  background:white;
+  z-index: 1;
+}
+
+
+.dropdown-content a {
+  color: #C0C0C0;
+  padding: 10px;
+  font-size:13px;
+  display: inline-block;
+}
+
+
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+  color:black;
+}
+
+/* 홈페이지 메인 제품 목록  */
+.content_area{
+	width: 100%;
+    min-height: 1000px;
+    margin-top:50px;
+}
+
+
+/* float 속성 해제 */
+.clearfix{
+	clear: both;
+}
+

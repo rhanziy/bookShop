@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vam.mapper.AdminMapper">
+
+	<insert id="bookEnroll">
+		
+		<selectKey keyProperty="bookId" order="BEFORE" resultType="int">
+			select goods_seq.nextval from dual
+		</selectKey>
+			
+		insert into vam_book(
+			bookId
+			, bookName
+			, authorId
+			, publeYear
+			, publisher
+			, cateCode
+			, bookPrice
+			, bookStock
+			, bookDiscount
+			, bookIntro
+			, bookContents
+			)
+			values (
+			#{bookId}
+			, #{bookName}
+			, #{authorId}
+			, #{publeYear}
+			, #{publisher}
+			, #{cateCode}
+			, #{bookPrice}
+			, #{bookStock}
+			, #{bookDiscount}
+			, #{bookIntro}
+			, #{bookContents}
+			
+			)
+	
+	</insert>
+
+	<select id="cateList" resultType="com.vam.model.CateVO">
+	
+		select * from vam_bcate order by cateCode
+	
+	</select>
+	
+	
+ 	<!-- 상품 리스트 -->
+  	<select id="goodsGetList" resultType="com.vam.model.BookVO">
+  	
+	  	<![CDATA[
+		select * from(
+		    select /*+INDEX_DESC(vam_book SYS_C0011315)*/ rownum as rn, bookId, bookName,
+		        (select authorName from vam_author where vam_book.authorId = vam_author.authorId) authorName,
+		        (select cateName from vam_bcate where vam_book.cateCode = vam_bcate.cateCode) cateName,bookStock,regDate
+		    from vam_book 
+		    where 
+		]]>    
+		
+		    <if test="keyword != null">
+			    bookName like '%' || #{keyword} || '%' and
+		    </if>
+		  
+		    rownum <![CDATA[  <= ]]> #{pageNum} * #{amount} 
+		    )
+		where rn <![CDATA[ > ]]> (#{pageNum} -1) * #{amount}		  	
+  	
+  	</select>
+  	
+  	
+  	<!-- 상품 총 개수 -->
+  	<select id="goodsGetTotal" resultType="int">
+  	
+  		select count(*) from vam_book
+  		
+  		<if test="keyword != null">
+  		
+  			where bookName like '%' || #{keyword} || '%'
+  		</if>
+  		
+  	</select> 
+  	
+  	<select id="goodsGetDetail" resultType="com.vam.model.BookVO">
+  	
+  		select bookId
+  			   , bookName
+  			   , (select authorName from vam_author where authorId = vam_book.authorId) authorName
+  			   , authorId
+  			   , publeYear
+  			   , publisher
+  			   , cateCode
+  			   , bookPrice
+  			   , bookStock
+  			   , bookDiscount
+  			   , bookIntro
+  			   , bookContents
+  			   , regDate
+  			   , updateDate
+  		  from vam_book
+  		 where bookId = #{bookId}
+  	
+  	</select>
+  	
+  	
+  	<update id="goodsModify">
+  	
+  		update vam_book 
+	  		   set bookName = #{bookName}
+	  		     , authorId = #{authorId}
+	  			 , publeYear = #{publeYear}
+	  			 , publisher = #{publisher}
+	  			 , cateCode = #{cateCode}
+	  			 , bookPrice = #{bookPrice}
+	  			 , bookStock = #{bookStock}
+	  			 , bookDiscount = #{bookDiscount}
+	  			 , bookIntro = #{bookIntro}
+	  			 , bookContents = #{bookContents}
+	  			 , updateDate = sysdate
+ 			where bookId = ${bookId}
+  			 
+  			 
+  	</update>
+  	
+	<delete id="goodsDelete">
+	
+		delete from vam_book where bookId = #{bookId}
+	
+	</delete>
+	
+	<insert id="imageEnroll">
+		
+		<selectKey resultType="int" keyProperty="bookId" order="AFTER">
+			
+			<!-- select max(bookId) from vam_book -->
+			select goods_seq.currval from dual
+			
+		</selectKey>
+		
+		insert into vam_image(
+			  bookId
+			, fileName
+			, uploadPath
+			, uuid
+		) values (
+			  #{bookId}
+			, #{fileName}
+			, #{uploadPath}
+			, #{uuid}
+		)
+		
+	</insert>
+	
+	<insert id="imageModify">
+				
+		insert into vam_image(
+			  bookId
+			, fileName
+			, uploadPath
+			, uuid
+		) values (
+			  #{bookId}
+			, #{fileName}
+			, #{uploadPath}
+			, #{uuid}
+		)
+		
+	</insert>
+	
+	<delete id="deleteImageAll">
+	
+		delete from vam_image where bookId = #{bookId}
+	
+	</delete>
+	
+	<select id = "checkFileList" resultType="com.vam.model.AttachImageVO">
+
+		select * from vam_image where uploadPath = to_char(sysdate -1, 'YYYY\MM\DD')
+
+	</select>
+	
+	<select id="getAttachInfo" resultType="com.vam.model.AttachImageVO">
+	
+		select * from vam_image where bookId = #{bookId}
+		
+	</select>
+	
+</mapper>
