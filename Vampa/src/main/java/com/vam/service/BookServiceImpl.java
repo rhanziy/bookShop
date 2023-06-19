@@ -27,6 +27,10 @@ public class BookServiceImpl implements BookService{
 	@Autowired
 	private AttachMapper attachMapper;
 	
+	/*상품 이미지 정보 불러오기*/
+	@Autowired
+	private AdminMapper adminMapper;
+	
 	/* 상품 검색 */
 	@Override
 	public List<BookVO> getGoodsList(Criteria cri) {
@@ -126,5 +130,18 @@ public class BookServiceImpl implements BookService{
 		cri.setCateCode(tempCateCode);
 		
 		return filterInfoList;
+	}
+	
+	
+	
+	@Override
+	public BookVO getGoodsInfo(int bookId) {
+		
+		BookVO goodsInfo = bookMapper.getGoodsInfo(bookId);
+		
+		/*상품 이미지 정보*/
+		goodsInfo.setImageList(adminMapper.getAttachInfo(bookId));
+		
+		return goodsInfo;
 	}
 }

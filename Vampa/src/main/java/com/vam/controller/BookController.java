@@ -123,6 +123,14 @@ public class BookController {
 		
 	}
 	
+	
+	@GetMapping("/goodsDetail/{bookId}")
+	public String goodsDetailGET(@PathVariable("bookId")int bookId, Model model) {
+		
+		model.addAttribute("goodsInfo", bookService.getGoodsInfo(bookId));
+		
+		return "/goodsDetail";
+	}
 
 	
 	

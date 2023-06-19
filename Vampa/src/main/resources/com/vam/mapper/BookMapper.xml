@@ -124,4 +124,13 @@
 		group by a.cateCode, b.cateName
 	</select>
 	
+	
+	<select id="getGoodsInfo" resultType="com.vam.model.BookVO">
+		
+		select a.bookId, a.bookName, a.authorId, b.authorName, a.publeYear, a.publisher, a.cateCode, c.cateName, a.bookPrice, a.bookStock, a.bookDiscount, a.bookIntro, a.bookContents
+		  from vam_book a left outer join vam_author b on a.authorId = b.authorId
+ 	   		left outer join vam_bcate c on a.cateCode = c.cateCode
+		 where bookId = ${bookId}
+		
+	</select>
   </mapper>

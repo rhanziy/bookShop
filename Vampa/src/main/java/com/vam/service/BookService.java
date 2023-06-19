@@ -22,8 +22,9 @@ public interface BookService {
 	/* 외국 카테고리 리스트 */
 	public List<CateVO> getCateCode2();	
 	
-	
+	/* 검색결과 카테고리 필터 정보 */
 	public List<CateFilterDTO> getCateInfoList(Criteria cri);
-
 	
+	/* 상품 상세 정보 */
+	public BookVO getGoodsInfo(int bookId);
 }
