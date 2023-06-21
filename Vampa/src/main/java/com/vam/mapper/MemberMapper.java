@@ -3,9 +3,12 @@ package com.vam.mapper;
 import com.vam.model.MemberVO;
 
 public interface MemberMapper {
-  void memberJoin(MemberVO paramMemberVO);
+ 
+	public void memberJoin(MemberVO paramMemberVO);
   
-  int idCheck(String paramString);
+	public int idCheck(String paramString);
   
-  MemberVO memberLogin(MemberVO paramMemberVO);
+	public MemberVO memberLogin(MemberVO paramMemberVO);
+	
+	public MemberVO getMemberInfo(String memberId);
 }

@@ -3,9 +3,13 @@ package com.vam.service;
 import com.vam.model.MemberVO;
 
 public interface MemberService {
-  void memberJoin(MemberVO paramMemberVO) throws Exception;
+  public void memberJoin(MemberVO paramMemberVO) throws Exception;
+
+  public int idCheck(String paramString) throws Exception;
+ 
+  public MemberVO memberLogin(MemberVO paramMemberVO) throws Exception;
   
-  int idCheck(String paramString) throws Exception;
+  public MemberVO getMemberInfo(String memberId);
   
-  MemberVO memberLogin(MemberVO paramMemberVO) throws Exception;
+  
 }

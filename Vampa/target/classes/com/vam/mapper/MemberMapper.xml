@@ -31,4 +31,12 @@
 			where memberId = #{memberId}
 	</select>
 	
+	<select id="getMemberInfo" resultType="com.vam.model.MemberVO">
+		
+		select memberId, memberName, memberMail, memberAddr1, memberAddr2, memberAddr3, money, point
+		  from book_member
+		 where memberId = #{memberId} 
+		
+	</select>
+	
 </mapper>

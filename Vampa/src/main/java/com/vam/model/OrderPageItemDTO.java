@@ -1,54 +1,50 @@
 package com.vam.model;
 
-import java.util.List;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
+
 @ToString
-public class CartDTO {
-	private int cartId;
+@Setter
+@Getter
+public class OrderPageItemDTO {
 	
-	private String memberId;
-	
+	/*뷰로부터 전달 받을 값*/
 	private int bookId;
 	
 	private int bookCount;
 	
+	/*DB에서 꺼내올 값*/
 	private String bookName;
 	
 	private int bookPrice;
 	
 	private double bookDiscount;
 	
-	@Setter(AccessLevel.PROTECTED)
-	private int point;
-	
-	@Setter(AccessLevel.PROTECTED)
-	private int totalPoint;
+	/*만들어 낼 값*/
 	
 	@Setter(AccessLevel.PROTECTED)
 	private int salePrice;
 	
 	@Setter(AccessLevel.PROTECTED)
 	private int totalPrice;
+	
+	@Setter(AccessLevel.PROTECTED)
+	private int point;
+	
+	@Setter(AccessLevel.PROTECTED)
+	private int totalPoint;
 	public void initSaleTotal() {
-		this.salePrice = (int) (this.bookPrice * (1-this.bookDiscount));
+		this.salePrice = (int)(this.bookPrice * (1-this.bookDiscount));
 		this.totalPrice = this.salePrice * this.bookCount;
-		
 		if(this.salePrice == this.bookPrice) {
 			this.point = (int)(Math.floor(this.bookPrice * 0.05));
 		} else {
 			this.point = (int)(Math.floor(this.salePrice * 0.05));
 		}
-		
 		this.totalPoint = this.point * this.bookCount;
 	}
 	
-	private List<AttachImageVO> imageList;
-
 }

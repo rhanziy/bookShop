@@ -5,6 +5,9 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -38,6 +41,34 @@ public class CartController {
 		int result = cartService.addCart(cart);
 		
 		return result + "";
+		
+	}
+	
+	@GetMapping("/cart/{memberId}")
+	public String cartPageGET(@PathVariable("memberId") String memberId, Model model) {
+		
+		model.addAttribute("cartInfo", cartService.getCartList(memberId));
+		
+		return "/cart";
+		
+	}
+	
+	
+	@PostMapping("/cart/update")
+	public String updateCartPOST(CartDTO cart) {
+		
+		cartService.modifyCount(cart);
+		
+		return "redirect:/cart/" + cart.getMemberId();
+		
+	}
+	
+	@PostMapping("/cart/delete")
+	public String deleteCartPOST(CartDTO cart) {
+	
+		cartService.deleteCart(cart.getCartId());
+		
+		return "redirect:/cart/" + cart.getMemberId();
 		
 	}
 	

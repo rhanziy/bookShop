@@ -8,11 +8,11 @@ public interface CartService {
 	
 	public int addCart(CartDTO cart);
 	
-	public int deleteCart(int cartId);
+	public List<CartDTO> getCartList(String memberId);
 	
 	public int modifyCount(CartDTO cart);
 	
-	public List<CartDTO> getCart(String memberId);
+	public int deleteCart(int cartId);
 	
 	public CartDTO checkCart(CartDTO cart);
 	

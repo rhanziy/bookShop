@@ -24,7 +24,7 @@
 	
 	<update id="modifyCount">
 	
-		update vam_cart set bookCount=#{bookCount} where cartId = #{cartId}
+		update vam_cart set bookCount = #{bookCount} where cartId = #{cartId}
 	
 	</update>
 	
