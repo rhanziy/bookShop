@@ -11,5 +11,74 @@
 		 where bookId = #{bookId}
 	
 	</select>
+	
+	<select id="getOderInfo" resultType="com.vam.model.OrderItemDTO">
+	
+		select bookId, bookPrice, bookDiscount
+		  from vam_book
+		 where bookId = #{bookId}
+	
+	</select>
+
+	<insert id="enrollOrder">
+	
+		insert into vam_order(
+			orderId
+			, addressee
+			, memberId
+			, memberAddr1
+			, memberAddr2
+			, memberAddr3
+			, orderState
+			, deliveryCost
+			, usePoint
+			) values (
+				${orderId}
+				, ${addressee}
+				, ${memberId}
+				, ${memberAddr1}
+				, ${memberAddr2}
+				, ${memberAddr3}
+				, '배송 준비'
+				, #{deliveryCost}
+				, #{usePoint}
+			)
+	
+	</insert>
+
+	<insert id="enrollOrderItem">
+	
+		insert into vam_orderItem(
+			orderId
+			, bookId
+			, bookCount
+			, bookPrice
+			, bookDiscount
+			, savePoint
+		) values (
+			#{orderId}
+			, #{bookId}
+			, #{bookCount}
+			, #{bookPrice}
+			, #{bookDiscount}
+			, #{savePoint}
+		)
+		
+	</insert>
+	
+	<update id="deductMoney">
+	
+		update book_member 
+		   set money = #{money}
+		   	   , point = #{point}
+		 where memberId = #{memberId}
+			
+	</update>
+	
+	<update id="deductStock">
+		update vam_book
+		   set bookStock = #{bookStock}
+		 where bookId = #{bookId}
+	</update>
 
   </mapper>

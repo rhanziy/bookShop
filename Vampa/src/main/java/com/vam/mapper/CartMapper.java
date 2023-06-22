@@ -16,4 +16,7 @@ public interface CartMapper {
 	
 	public CartDTO checkCart(CartDTO cart);
 	
+	
+	/* 주문 장바구니 제거 */
+	public int deleteOrderCart(CartDTO cart);
 }

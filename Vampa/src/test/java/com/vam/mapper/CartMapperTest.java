@@ -48,18 +48,32 @@ public class CartMapperTest {
 //		
 //		mapper.deleteCart(cartId);
 //	}
+//	
+//	@Test
+//	public void modifyCart() {
+//		int cartId = 2;
+//		int count = 5;
+//		
+//		CartDTO cart = new CartDTO();
+//		cart.setCartId(cartId);
+//		cart.setBookCount(count);
+//		
+//		mapper.modifyCount(cart);
+//	}
+//	
 	
+	/* 장바구니 제거(주문 처리) */
 	@Test
-	public void modifyCart() {
-		int cartId = 2;
-		int count = 5;
+	public void deleteOrderCart() {
+		String memberId = "admin";
+		int bookId = 3201;
 		
-		CartDTO cart = new CartDTO();
-		cart.setCartId(cartId);
-		cart.setBookCount(count);
+		CartDTO dto = new CartDTO();
+		dto.setMemberId(memberId);
+		dto.setBookId(bookId);
 		
-		mapper.modifyCount(cart);
+		mapper.deleteOrderCart(dto);
+		
 	}
-	
 	
 }

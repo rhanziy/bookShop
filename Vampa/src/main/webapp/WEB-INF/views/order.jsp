@@ -48,7 +48,12 @@
 									<tr>
 										<th>주소</th>
 										<td>
-											${memberInfo.memberAddr1} ${memberInfo.memberAddr2}<br>${memberInfo.memberAddr3}										
+											${memberInfo.memberAddr1} ${memberInfo.memberAddr2}<br>${memberInfo.memberAddr3}
+											<input class="selectAddress" value="T" type="hidden">
+											<input class="addressee_input" type="hidden" value="${memberInfo.memberName}">
+											<input class="address1_input" type="hidden" value="${memberInfo.memberAddr1}">
+											<input class="address2_input" type="hidden" value="${memberInfo.memberAddr2}">
+											<input class="address3_input" type="hidden" value="${memberInfo.memberAddr3}">										
 										</td>
 									</tr>
 								</tbody>
@@ -70,6 +75,7 @@
 									<tr>
 										<th>주소</th>
 										<td>
+											<input class="selectAddress" value="T" type="hidden">
 											<input class="address1_input" readonly="readonly"> <a class="address_search_btn" onclick="execution_daum_address()">주소 찾기</a><br>
 											<input class="address2_input" readonly="readonly"><br>
 											<input class="address3_input" readonly="readonly">
@@ -98,7 +104,9 @@
 							<c:forEach items="${orderList}" var="ol">
 								<tr>
 									<td class="goods_table_img_td">
-										<!-- 이미지 <td>-->
+										<div class="image_wrap" data-bookid="${ol.imageList[0].bookId}" data-path="${ol.imageList[0].uploadPath}" data-uuid="${ol.imageList[0].uuid}" data-filename="${ol.imageList[0].fileName}">
+											<img>
+										</div>
 									</td>
 									<td class="goods_table_name_td">${ol.bookName}</td>
 									<td class="goods_table_price_td">
@@ -138,6 +146,54 @@
 						</tbody>
 					</table>
 				</div>
+				<div class="total_info_div">
+					<!-- 가격 종합 정보 -->
+					<div class="total_info_price_div">
+						<ul>
+							<li>
+								<span class="price_span_label">상품 금액</span>
+								<span class="totalPrice_span"></span>원
+							</li>
+							<li>
+								<span class="price_span_label">배송비</span>
+								<span class="delivery_price_span"></span>원
+							</li>
+							<li>
+								<span class="price_span_label">할인금액</span>
+								<span class="usePoint_span"></span>원
+							</li>
+							<li class="price_total_li">
+								<strong class="price_span_label total_price_label">최종 결제 금액</strong>
+								<strong class="strong_red">
+									<span class="total_price_red finalTotalPrice_span">
+										
+									</span>원
+								</strong>
+							</li>
+							<li class="point_li">
+								<span class="price_span_label">적립예정 포인트</span>
+								<span class="totalPoint_span">원</span>
+							</li>
+						</ul>
+					</div>
+					<!-- 버튼 영역 -->
+					<div class="total_info_btn_div">
+						<a class="order_btn">결제하기</a>
+					</div>
+				</div>
+				<!-- 주문 요청 form -->
+				<form class="order_form" action="/order" method="post">
+					<!-- 주문자 회원번호 -->
+					<input name="memberId" value="${memberInfo.memberId}" type="hidden">
+					<!-- 주소록 & 받는이-->
+					<input name="addressee" type="hidden">
+					<input name="memberAddr1" type="hidden">
+					<input name="memberAddr2" type="hidden">
+					<input name="memberAddr3" type="hidden">
+					<!-- 사용 포인트 -->
+					<input name="usePoint" type="hidden">
+					<!-- 상품 정보 -->
+				</form>
 				
 			</div>
 		</div>
@@ -145,6 +201,31 @@
 	<%@include file="footer.jsp"%>
 	
 	<script>
+	
+		$(document).ready(function(){
+			
+			/* 주문 조합정보란 최신화 */
+			setTotalInfo();
+			
+			
+			$(".image_wrap").each(function(i, e){
+				const bobj = $(e);
+				
+				if(bobj.data("bookid")){
+					const uploadPath = bobj.data("path");
+					const uuid = bobj.data("uuid");
+					const fileName = bobj.data("filename");
+					
+					const fileCallPath = encodeURIComponent(uploadPath + "/s_" + uuid + "_" + fileName);
+					
+					$(this).find("img").attr('src', '/display?fileName=' + fileCallPath);
+				} else {
+					$(this).find('img').attr('src', '/resources/img/goodsNoImage.png');
+				}
+			});
+			
+			
+		});
 	
 		function showAddress(className){
 			
@@ -160,6 +241,16 @@
 			$(".address_btn").css("backgroundColor", '#555');
 			/* 지정 색상 변경 */
 			$(".address_btn_" + className).css('backgroundColor', '#3c3838');
+			
+			
+			/*모든 selectAddress val F만들기*/
+			$(".addressInfo_input_div").each(function(i, e){
+				$(e).find(".selectAddress").val("F");
+			});
+			
+			/* 선택한  selectAddress T만들기*/
+			$(".addressInfo_input_div_" + className).find(".selectAddress").val("T");
+			
 			
 		}
 		
@@ -227,6 +318,8 @@
 			} else if(inputValue > maxPoint){
 				$(this).val(maxPoint);
 			}
+			
+			setTotalInfo();
 		});
 		
 		
@@ -246,8 +339,102 @@
 				$('.order_point_input_btn_N').css('display', "inline-block");
 			}
 			
+			setTotalInfo();
+			
 		});
 		
-	</script>
+		/* 총 주문 정보 세팅(배송비, 총 가격, 마일리지, 물품 수, 종류) */
+		function setTotalInfo(){
+
+			let totalPrice = 0;				// 총 가격
+			let totalCount = 0;				// 총 갯수
+			let totalKind = 0;
+			let totalPoint = 0;				// 총 마일리지
+			let deliveryPrice = 0;			// 배송비
+			let usePoint = 0;				// 사용 포인트(할인가격)
+			let finalTotalPrice = 0; 		// 최종 가격(총 가격 + 배송비)	
+			
+			
+			$('.goods_table_price_td').each(function(i, e){
+
+				//총 가격
+				totalPrice += parseInt($(e).find(".individual_totalPrice_input").val());
+				//총 갯수
+				totalCount += parseInt($(e).find(".individual_bookCount_input").val());
+				//총 마일리지
+				totalPoint += parseInt($(e).find(".individual_totalPoint_input").val());
+				//총 종류
+				totalKind += 1;
+				
+			});
+			
+			
+			/*배송비 결정*/
+			if(totalPrice >= 30000 || totalPrice == 0){
+				deliveryPrice = 0;
+			} else {
+				deliveryPrice = 3000;
+			}
+			
+			/* 사용 포인트 */
+			usePoint = $('.order_point_input').val();
+			
+			finalTotalPrice = (totalPrice - usePoint) + deliveryPrice;
+			
+			
+			/* 값 삽입  tolocaleString() = 3자리 마다 콤마*/
+			// 총 가격
+			$(".totalPrice_span").text(totalPrice.toLocaleString());
+			// 총 갯수
+			$(".goods_kind_div_count").text(totalCount);
+			// 총 종류
+			$(".goods_kind_div_kind").text(totalKind);
+			// 총 마일리지
+			$(".totalPoint_span").text(totalPoint.toLocaleString());
+			// 배송비
+			$(".delivery_price_span").text(deliveryPrice.toLocaleString());	
+			// 최종 가격(총 가격 + 배송비)
+			$(".finalTotalPrice_span").text(finalTotalPrice.toLocaleString());		
+			// 할인가(사용 포인트)
+			$(".usePoint_span").text(usePoint.toLocaleString());
+
+		}
+		
+		
+		$(".order_btn").on('click', function(){
+			
+			$('.addressInfo_input_div').each(function(i, e){
+				if($(e).find(".selectAdress").val() === "T"){
+					$('input[name="addressee"]').val($(e).find(".addressee_input").val());
+					$('input[name="memberAddr1"]').val($(e).find(".address1_input").val());
+					$('input[name="memberAddr2"]').val($(e).find(".address2_input").val());
+					$('input[name="memberAddr3"]').val($(e).find(".address3_input").val());
+				}
+			});
+			
+			$("input[name='usePoint']").val($(".order_point_input").val());
+			
+			let form_contents = '';
+			
+			$('.goods_table_price_td').each(function(i, e){
+				
+				let bookId = $(e).find(".individual_bookId_input").val();
+				let bookCount = $(e).find(".individual_bookCount_input").val();
+				let bookId_input = "<input name='orders["+ i +"].bookId' type='hidden' value='"+ bookId+ "' >";
+				
+				form_contents += bookId_input;
+				
+				let bookCount_input = "<input name='orders["+ i +"].bookCount' type='hidden' value='"+ bookCount +"' />";
+				
+				form_contents += bookCount_input;
+			
+			});
+			
+			$('.order_form').append(form_contents);
+			$('.order_form').submit();
+			
+		});
+		
+		</script>
 </body>
 </html>
