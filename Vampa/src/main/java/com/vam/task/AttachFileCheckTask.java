@@ -42,9 +42,9 @@ public class AttachFileCheckTask {
 	@Scheduled(cron="0 * * * * *")
 	public void checkFiles() throws Exception{	
 		
-		log.warn("File Check Task Run..........");
-		log.warn(new Date());
-		log.warn("========================================");		
+//		log.warn("File Check Task Run..........");
+//		log.warn(new Date());
+//		log.warn("========================================");		
 		
 		// DB에 저장된 파일 리스트
 		List<AttachImageVO> fileList = mapper.checkFileList();		
@@ -78,16 +78,16 @@ public class AttachFileCheckTask {
 			});
 		}
 		
-		
-		// 삭제 대상 파일 제거
-		log.warn("file Delete : ");
-		for(File file : removeFileList) {
-			log.warn(file);
-			file.delete();
-		}		
-		
-		log.warn("========================================");
-		
+//		
+//		// 삭제 대상 파일 제거
+//		log.warn("file Delete : ");
+//		for(File file : removeFileList) {
+//			log.warn(file);
+//			file.delete();
+//		}		
+//		
+//		log.warn("========================================");
+//		
 	}
 	
 	

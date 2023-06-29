@@ -98,12 +98,16 @@ table {
 
 .addressInfo_input_div td {
 	padding: 8px 12px;
+
 }
+
 
 .addressInfo_input_div_2 input {
 	padding: 6px 5px;
 	border:1px solid #aaa;
 }
+
+
 
 .address_search_btn {
 	display: inline-block;

@@ -9,6 +9,7 @@
 <title>Insert title here</title>
 <link rel="stylesheet" href="../resources/css/admin/adminCmn.css">
 <link rel="stylesheet" href="../resources/css/admin/authorModify.css">
+<link rel="stylesheet" href="../resources/css/footer.css">
 
 <script
   src="https://code.jquery.com/jquery-3.4.1.js"

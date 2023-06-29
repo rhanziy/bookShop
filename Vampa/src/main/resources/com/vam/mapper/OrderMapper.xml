@@ -12,7 +12,7 @@
 	
 	</select>
 	
-	<select id="getOderInfo" resultType="com.vam.model.OrderItemDTO">
+	<select id="getOrderInfo" resultType="com.vam.model.OrderItemDTO">
 	
 		select bookId, bookPrice, bookDiscount
 		  from vam_book
@@ -33,12 +33,12 @@
 			, deliveryCost
 			, usePoint
 			) values (
-				${orderId}
-				, ${addressee}
-				, ${memberId}
-				, ${memberAddr1}
-				, ${memberAddr2}
-				, ${memberAddr3}
+				#{orderId}
+				, #{addressee}
+				, #{memberId}
+				, #{memberAddr1}
+				, #{memberAddr2}
+				, #{memberAddr3}
 				, '배송 준비'
 				, #{deliveryCost}
 				, #{usePoint}
@@ -48,15 +48,22 @@
 
 	<insert id="enrollOrderItem">
 	
+		<selectKey keyProperty="orderItemId" order="BEFORE" resultType="int">
+				select orderItem_seq.nextval from dual
+		</selectKey>
+			
+	
 		insert into vam_orderItem(
-			orderId
+			orderItemId
+			, orderId
 			, bookId
 			, bookCount
 			, bookPrice
 			, bookDiscount
 			, savePoint
 		) values (
-			#{orderId}
+			#{orderItemId}
+			, #{orderId}
 			, #{bookId}
 			, #{bookCount}
 			, #{bookPrice}
@@ -80,5 +87,23 @@
 		   set bookStock = #{bookStock}
 		 where bookId = #{bookId}
 	</update>
+	
+	<!-- 주문 취소 -->
+	<update id="orderCancle">
+		update vam_order set orderState = '주문 취소' where orderId = #{orderId}
+	</update>
+	
+	<!-- 주문 상품 정보(주문취소) -->
+	<select id="getOrderItemInfo" resultType="com.vam.model.OrderItemDTO">
+		select * from vam_orderItem
+		 where orderId = #{orderId}
+	</select>
+	
+	<!-- 주문 취소된 상품정보 -->
+	<select id="getOrder" resultType="com.vam.model.OrderDTO">
+		select * from vam_order
+		 where orderId = #{orderId}
+	</select>
+
 
   </mapper>

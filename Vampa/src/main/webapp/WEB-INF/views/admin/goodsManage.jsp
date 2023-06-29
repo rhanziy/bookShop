@@ -10,6 +10,7 @@
 <title>Insert title here</title>
 <link rel="stylesheet" href="../resources/css/admin/adminCmn.css">
 <link rel="stylesheet" href="../resources/css/admin/goodsManage.css">
+<link rel="stylesheet" href="../resources/css/footer.css">
  
 <script
   src="https://code.jquery.com/jquery-3.4.1.js"
@@ -161,17 +162,21 @@
 			
 			e.preventDefault();
 			
-			moveForm.find("input[name='pageNum']").val($(this).attr('href'));
+			$('input[name="bookId"]').remove();
+			moveForm.find("input[name='pageNum']").val($(this).attr("href"));
+			moveForm.attr("action", "/admin/goodsManage");
 			
 			moveForm.submit();
 			
 		});
 		
 		
+		
 		$('.move').on("click", function(e){
 			
 			e.preventDefault();
 			
+			$('input[name="bookId"]').remove();
 			moveForm.append("<input type='hidden' name='bookId' value='"+$(this).attr("href")+"'>");
 			moveForm.attr("action", "/admin/goodsDetail");
 			moveForm.submit();

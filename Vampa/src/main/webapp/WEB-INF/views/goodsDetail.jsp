@@ -5,9 +5,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link rel="stylesheet" href="/resources/css/goodsDetail.css">
 <link rel="stylesheet" href="/resources/css/header.css">
 <link rel="stylesheet" href="/resources/css/footer.css">
+<link rel="stylesheet" href="/resources/css/goodsDetail.css">
 </head>
 <body>
 	
@@ -51,6 +51,9 @@
 							<fmt:formatNumber value="${goodsInfo.bookPrice*goodsInfo.bookDiscount}" pattern="#,### 원" /> 할인]
 						</div>	
 						<div>
+							재고 : <span class="stock_span">${goodsInfo.bookStock}</span>권
+						</div>	
+						<div>
 							적립 포인트 : <span class="point_span"></span>원
 						</div>						
 					</div>			
@@ -72,8 +75,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="detail line">
-			</div>				
+	
 			<div class="content_middle">
 				<div class="book_intro">
 					${goodsInfo.bookIntro}
@@ -83,10 +85,18 @@
 				</div>
 			</div>
 			<div class="detail line">
-			</div>				
-			<div class="content_bottom">
-				리뷰
 			</div>
+			<div class="content_bottom">
+				<div class="reply_subject">
+					<h3>독서 후기</h3>
+					<c:if test="${member != null }">
+						<span class="reply_button_wrap">
+							<button>후기 작성</button>
+						</span>
+					</c:if>
+				</div>
+			</div>
+			
 			
 			
 			<!-- 주문 form -->
@@ -104,7 +114,7 @@
 			
 			const bobj = $('.image_wrap');
 			
-			if(bobj.data("bookId")){
+			if(bobj.data("bookid")){
 				const uploadPath = bobj.data("path");
 				const uuid = bobj.data("uuid");
 				const fileName = bobj.data("filename");
@@ -178,7 +188,23 @@
 		
 		$('.btn_cart').click(function(e){
 			
-			form.bookCount = quantity;
+			let stock = parseInt($('.stock_span').html());
+			let bookCount = parseInt($('.quantity_input').val());
+			
+			console.log(quantity);
+			console.log(bookCount);
+			console.log(stock);
+			
+			
+			if(stock <= 0){
+				alert('재고가 부족합니다.');
+				return;
+			} else if(bookCount > stock){
+				alert('재고가 부족합니다.');
+				return;
+			} 
+			
+			form.bookCount = bookCount;
 			
 			$.ajax({
 				url : '/cart/add',
@@ -205,11 +231,51 @@
 		
 		
 		$('.btn_buy').on('click',function(){
+			
+			let stock = $('.stock_span').html();
 			let bookCount = $('.quantity_input').val();
+	
+			if(stock <= 0){
+				alert('재고가 부족합니다.');
+				return;
+			} else if(bookCount > stock){
+				alert('재고가 부족합니다.');
+				return;
+			} 
+		
 			$('.order_form').find('input[name="orders[0].bookCount"]').val(bookCount);
-			$('.order_form').submit();
+			$('.order_form').submit();	
 		});
 		
+		
+		$('.reply_button_wrap').on('click',function(e){
+			e.preventDefault();
+			
+			const memberId = '${member.memberId}';
+			const bookId = '${goodsInfo.bookId}';
+
+			$.ajax({
+				data : {
+					bookId: bookId,
+					memberId : memberId
+				},
+				url : '/reply/check',
+				type : 'POST',
+				success : function(result){
+					if(result == 1){
+						alert("이미 등록된 리뷰가 존재합니다.");
+					} else {
+
+						let popUrl = '/replyEnroll/' + memberId + "?bookId=" + bookId;
+						let popOption = "width=490px, height=490px, top=300px, left=300px, scrollbars=yes";
+						
+						window.open(popUrl, "리뷰 작성", popOption);
+					
+					}
+				}
+			});
+			
+		});
 		
 	</script>
 </body>

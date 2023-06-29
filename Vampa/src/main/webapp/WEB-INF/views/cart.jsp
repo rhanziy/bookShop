@@ -133,13 +133,14 @@
 	<script>
 	
 		$(document).ready(function(){
-			setTotalInfo()
+			
+			setTotalInfo();
 			
 			$('.image_wrap').each(function(i, obj){
 				
 				const bobj = $(obj);
 				
-				if(bobj.data("bookId")){
+				if(bobj.data("bookid")){
 					
 					const uploadPath = bobj.data("path");
 					const uuid = bobj.data("uuid");
@@ -150,6 +151,7 @@
 					$(this).find("img").attr("src", '/display?fileName=' + fileCallPath);
 					
 				} else {
+					
 					$(this).find("img").attr("src", '/resources/img/goodsNoImage.png');
 				}
 			});
@@ -279,6 +281,7 @@
 				}
 			});
 			
+		
 			$(".order_form").html(form_contents);
 			$(".order_form").submit();
 			

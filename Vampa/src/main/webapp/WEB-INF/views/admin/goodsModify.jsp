@@ -11,6 +11,7 @@
 <title>Insert title here</title>
 <link rel="stylesheet" href="../resources/css/admin/adminCmn.css">
 <link rel="stylesheet" href="../resources/css/admin/goodsModify.css">
+<link rel="stylesheet" href="../resources/css/footer.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" />
 <script
   src="https://code.jquery.com/jquery-3.4.1.js"
@@ -486,6 +487,7 @@
 		
 			e.preventDefault();
 			
+			$('input[name="bookId"]').remove();
 			$('#moveForm').submit();
 			
 		});

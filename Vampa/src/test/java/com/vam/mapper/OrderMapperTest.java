@@ -1,5 +1,8 @@
 package com.vam.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +10,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.vam.model.BookVO;
+import com.vam.model.OrderDTO;
+import com.vam.model.OrderItemDTO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
@@ -44,7 +49,7 @@ public class OrderMapperTest {
 //		
 //		ord.setOrders(orders);
 //		
-//		ord.setOrderId("2021_test1");
+//		ord.setOrderId("2023_test1");
 //		ord.setAddressee("test");
 //		ord.setMemberId("admin");
 //		ord.setMemberAddr1("test");
@@ -58,23 +63,23 @@ public class OrderMapperTest {
 //		
 //	}
 //	
-//	/* vam_itemorder 테이블 등록 */
-//	@Test
-//	public void enrollOrderItemTest() {
-//		
-//		OrderItemDTO oid = new OrderItemDTO();
-//		
-//		oid.setOrderId("2021_test1");
-//		oid.setBookId(61);
-//		oid.setBookCount(1);
-//		oid.setBookPrice(70000);
-//		oid.setBookDiscount(0.1);
-//				
-//		oid.initSaleTotal();
-//		
-//		mapper.enrollOrderItem(oid);
-//		
-//	}	
+	/* vam_itemorder 테이블 등록 */
+	@Test
+	public void enrollOrderItemTest() {
+		
+		OrderItemDTO oid = new OrderItemDTO();
+		
+		oid.setOrderId("2023_test1");
+		oid.setBookId(266);
+		oid.setBookCount(1);
+		oid.setBookPrice(12000);
+		oid.setBookDiscount(0.2);
+				
+		oid.initSaleTotal();
+		
+		mapper.enrollOrderItem(oid);
+		
+	}	
 //	
 //	/* 회원 돈, 포인트 정보 변경 */
 //	@Test
@@ -90,14 +95,14 @@ public class OrderMapperTest {
 //	}
 //	
 //	/* 상품 재고 변경 */
-	@Test
-	public void deductStockTest() {
-		BookVO book = new BookVO();
-		
-		book.setBookId(61);
-		book.setBookStock(77);
-		
-		mapper.deductStock(book);
-	}
-	
+//	@Test
+//	public void deductStockTest() {
+//		BookVO book = new BookVO();
+//		
+//		book.setBookId(61);
+//		book.setBookStock(77);
+//		
+//		mapper.deductStock(book);
+//	}
+//	
 }

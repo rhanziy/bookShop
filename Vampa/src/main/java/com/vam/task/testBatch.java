@@ -5,5 +5,5 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class testBatch {
-  private static final Logger log = Logger.getLogger(testBatch.class);
+//  private static final Logger log = Logger.getLogger(testBatch.class);
 }

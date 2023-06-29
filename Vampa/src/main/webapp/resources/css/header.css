@@ -102,13 +102,18 @@ input {
 	padding:5px 10px;
     font-size: 14px;
     background:#E0E0E0;
+    
 }
-.login_success_area > span{
+.login_success_area > ul{
     display : block;
     text-align: left;
 }
 
-.login_success_area > span > i {
+.login_success_area > ul li >span {
+	margin-right:10px;
+}
+
+.login_success_area > ul li > i {
 	width:15%;
 	font-size:15px;
 }

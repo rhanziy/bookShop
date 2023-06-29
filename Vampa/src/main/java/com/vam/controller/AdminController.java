@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,9 +38,14 @@ import com.vam.model.AttachImageVO;
 import com.vam.model.AuthorVO;
 import com.vam.model.BookVO;
 import com.vam.model.Criteria;
+import com.vam.model.MemberVO;
+import com.vam.model.OrderCancelDTO;
+import com.vam.model.OrderDTO;
 import com.vam.model.PageDTO;
 import com.vam.service.AdminService;
 import com.vam.service.AuthorService;
+import com.vam.service.MemberService;
+import com.vam.service.OrderService;
 
 import net.coobird.thumbnailator.Thumbnails;
 
@@ -55,6 +62,11 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 	
+	@Autowired
+	private OrderService orderService;
+	
+	@Autowired
+	private MemberService memberService;
 	
 	/* 관리자 메인 페이지 이동 */
 	@RequestMapping(value="main", method = RequestMethod.GET)
@@ -461,13 +473,46 @@ public class AdminController {
 		} catch(Exception e) {
 			
 			e.printStackTrace();
-			
 			return new ResponseEntity<String>("fail", HttpStatus.NOT_IMPLEMENTED);
 			
 		} // catch
-		
 		return new ResponseEntity<String>("success", HttpStatus.OK);
+	}
+	
+	/* 주문 현황 페이지 */
+	@GetMapping("/orderList")
+	public String orderListGET(Criteria cri, Model model) {
 		
+		List<OrderDTO> list = adminService.getOrderList(cri);
+		
+		if(!list.isEmpty()) {
+			model.addAttribute("list", list);
+		} else {
+			model.addAttribute("listCheck", "empty");
+		}
+		
+		model.addAttribute("pageMaker", new PageDTO(cri, adminService.getOrderTotal(cri)));
+		
+		return "/admin/orderList";
+		
+	}
+	
+	@PostMapping("/orderCancel")
+	public String orderCancelPOST(OrderCancelDTO dto, HttpServletRequest request) {
+		
+		orderService.orderCancel(dto);
+		
+		HttpSession session = request.getSession();
+
+		try {
+			MemberVO memberInfo = memberService.getMemberInfo(dto.getMemberId());
+			session.setAttribute("member", memberInfo);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		 
+		
+		return "redirect:/admin/orderList?keyword=" + dto.getKeyword() + "&amount=" + dto.getAmount() + "&pageNum=" + dto.getPageNum();
 	}
 	
 }

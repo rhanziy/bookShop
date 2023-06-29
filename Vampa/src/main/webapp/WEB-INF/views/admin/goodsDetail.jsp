@@ -10,6 +10,7 @@
 <title>Insert title here</title>
 <link rel="stylesheet" href="../resources/css/admin/adminCmn.css">
 <link rel="stylesheet" href="../resources/css/admin/goodsDetail.css">
+<link rel="stylesheet" href="../resources/css/footer.css">
 
 
 <script

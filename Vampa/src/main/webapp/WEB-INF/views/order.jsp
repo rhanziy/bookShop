@@ -75,7 +75,7 @@
 									<tr>
 										<th>주소</th>
 										<td>
-											<input class="selectAddress" value="T" type="hidden">
+											<input class="selectAddress" value="F" type="hidden">
 											<input class="address1_input" readonly="readonly"> <a class="address_search_btn" onclick="execution_daum_address()">주소 찾기</a><br>
 											<input class="address2_input" readonly="readonly"><br>
 											<input class="address3_input" readonly="readonly">
@@ -112,7 +112,7 @@
 									<td class="goods_table_price_td">
 										<fmt:formatNumber value="${ol.salePrice}" pattern="#,### 원" /> | 수량 ${ol.bookCount}개
 										<br><fmt:formatNumber value="${ol.totalPrice}" pattern="#,### 원" />
-										<br>[<fmt:formatNumber value="${ol.totalPoint}" pattern="#,### 원" />P]
+										<br>[<fmt:formatNumber value="${ol.totalPoint}" pattern="#,### " />P]
 										<input type="hidden" class="individual_bookPrice_input" value="${ol.bookPrice}">
 										<input type="hidden" class="individual_salePrice_input" value="${ol.salePrice}">
 										<input type="hidden" class="individual_bookCount_input" value="${ol.bookCount}">
@@ -203,6 +203,14 @@
 	<script>
 	
 		$(document).ready(function(){
+			
+			
+			let sessionMember = '<%= session.getAttribute("member")%>';
+
+			if(sessionMember == '' || sessionMember == 'null'){
+				confirm('세션이 만료되었으므로 메인 페이지로 이동합니다.');
+				location.href = '/main';
+			}
 			
 			/* 주문 조합정보란 최신화 */
 			setTotalInfo();
@@ -404,7 +412,9 @@
 		$(".order_btn").on('click', function(){
 			
 			$('.addressInfo_input_div').each(function(i, e){
-				if($(e).find(".selectAdress").val() === "T"){
+				
+				if($(e).find(".selectAddress").val() === "T"){
+					
 					$('input[name="addressee"]').val($(e).find(".addressee_input").val());
 					$('input[name="memberAddr1"]').val($(e).find(".address1_input").val());
 					$('input[name="memberAddr2"]').val($(e).find(".address2_input").val());
@@ -415,23 +425,24 @@
 			$("input[name='usePoint']").val($(".order_point_input").val());
 			
 			let form_contents = '';
-			
 			$('.goods_table_price_td').each(function(i, e){
 				
 				let bookId = $(e).find(".individual_bookId_input").val();
 				let bookCount = $(e).find(".individual_bookCount_input").val();
-				let bookId_input = "<input name='orders["+ i +"].bookId' type='hidden' value='"+ bookId+ "' >";
 				
+				let bookId_input = "<input name='orders["+ i +"].bookId' type='hidden' value='"+ bookId+ "' >";
 				form_contents += bookId_input;
 				
 				let bookCount_input = "<input name='orders["+ i +"].bookCount' type='hidden' value='"+ bookCount +"' />";
-				
 				form_contents += bookCount_input;
 			
 			});
 			
+			
 			$('.order_form').append(form_contents);
 			$('.order_form').submit();
+			
+			alert('결제완료');
 			
 		});
 		

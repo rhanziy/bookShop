@@ -7,6 +7,7 @@
 	<title>Insert title here</title>
 	<link rel="stylesheet" href="../resources/css/admin/adminCmn.css">
 	<link rel="stylesheet" href="../resources/css/admin/goodsEnroll.css">
+	<link rel="stylesheet" href="../resources/css/footer.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" />
 	 
 	 
@@ -198,7 +199,7 @@
 		
 		let enrollForm = $("#enrollForm");
 		
-		$('#cancleBtn').click(function(){
+		$('#cancelBtn').click(function(){
 			
 			location.href = "/admin/goodsManage"
 			

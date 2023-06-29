@@ -21,17 +21,17 @@
 	<div class="wrap">
 		<form id="login_form" method="post">
 			<div class="logo_wrap">
-				<span>Book Mall</span>
+				<a href="/main"><img src="${pageContext.request.contextPath}/resources/img/logo.png"></a>
 			</div>
 			<div class="login_wrap"> 
 				<div class="id_wrap">
-						<div class="id_input_box">
-						<input class="id_input" name="memberId">
+						<div class="input_box">
+						<input type="text" class="id_input" name="memberId" placeholder="아이디">
 					</div>
 				</div>
 				<div class="pw_wrap">
-					<div class="pw_input_box">
-						<input class="pw_iput" name="memberPw">
+					<div class="input_box">
+						<input type="password" class="pw_iput" name="memberPw" placeholder="비밀번호">
 					</div>
 				</div>
 				
@@ -41,7 +41,8 @@
 				
 				
 				<div class="login_button_wrap">
-					<input type="button" class="login_button" value="로그인">
+					<div class="login_button">로그인</div>
+					<div><a href ="/member/join">회원가입</a></div>
 				</div>			
 			</div>
 		</form>

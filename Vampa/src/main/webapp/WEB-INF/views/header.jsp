@@ -37,7 +37,7 @@
 						<li><a href="/admin/main">관리자 페이지</a>
 					</c:if>
 					<li>
-						<a id="gnb_logout_button">로그아웃</a>
+						<a href="/member/logout.do">로그아웃</a>
 					</li>
 					<li>마이홈</li>
 					<li><a href="/cart/${member.memberId}">장바구니</a></li>
@@ -69,9 +69,20 @@
 				<!-- 로그인 했을 때 -->
 				<c:if test ="${ member != null  }">
 					<div class="login_success_area">
-						<span><i class="fa-solid fa-user"></i> ${ member.memberName }</span>
-						<span><i class="fa-solid fa-sack-dollar"></i><fmt:formatNumber value="${ member.money }" pattern="#,###.##" /></span>
-						<span><i class="fa-solid fa-coins"></i> <fmt:formatNumber value="${ member.point }" pattern="#,###" /></span>
+						<ul>
+							<li>
+								<span><i class="fa-solid fa-user"></i></span>
+								${ member.memberName }
+							</li>
+							<li>
+								<span><i class="fa-solid fa-sack-dollar"></i></span>
+								<fmt:formatNumber value="${ member.money }" pattern="#,###.##" />
+								</li>
+							<li>
+								<span><i class="fa-solid fa-coins"></i></span>
+								<fmt:formatNumber value="${ member.point }" pattern="#,###" />
+							</li>
+						</ul>
 					</div>
 				</c:if>
 				

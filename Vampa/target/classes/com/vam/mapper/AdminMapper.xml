@@ -134,7 +134,10 @@
 		<selectKey resultType="int" keyProperty="bookId" order="AFTER">
 			
 			<!-- select max(bookId) from vam_book -->
-			select goods_seq.currval from dual
+			select last_number
+			  from user_sequences
+			 where sequence_name = 'GOODS_SEQ'
+			<!-- select goods_seq.currval from dual -->
 			
 		</selectKey>
 		
@@ -169,20 +172,40 @@
 	</insert>
 	
 	<delete id="deleteImageAll">
-	
 		delete from vam_image where bookId = #{bookId}
-	
 	</delete>
 	
 	<select id = "checkFileList" resultType="com.vam.model.AttachImageVO">
-
 		select * from vam_image where uploadPath = to_char(sysdate -1, 'YYYY\MM\DD')
-
 	</select>
 	
 	<select id="getAttachInfo" resultType="com.vam.model.AttachImageVO">
-	
 		select * from vam_image where bookId = #{bookId}
+	</select>
+	
+	
+	<!-- 주문 리스트 -->
+	<select id="getOrderList" resultType="com.vam.model.OrderDTO">
+		select * from (
+			select rownum rn, orderId, memberId, orderState, orderDate
+			  from vam_order
+			 where rownum <![CDATA[ <= ]]> #{pageNum} * #{amount}
+			
+			<if test="keyword != null">
+				and memberId like '%'||#{keyword}||'%'
+			</if>
+				order by orderDate desc
+			)
+			 where rn <![CDATA[ > ]]> (#{pageNum} -1) * #{amount}
+	</select>
+	
+	<!-- 상품 총 개수 -->
+	<select id="getOrderTotal" resultType="int">
+	
+		select count(*) from vam_order
+		<if test="keyword != null">
+			where memberId like '%'||#{keyword}||'%'			
+		</if>
 		
 	</select>
 	
