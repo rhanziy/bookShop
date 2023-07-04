@@ -45,6 +45,7 @@ public class BookServiceImpl implements BookService{
 		if(type.equals("A") || type.equals("AC") || type.equals("AT") || type.equals("ACT")) {
 			if(authorArr.length == 0) {
 				return new ArrayList();
+				
 			}
 		}
 		
@@ -54,8 +55,14 @@ public class BookServiceImpl implements BookService{
 			}
 		}		
 		
-		List<BookVO> list = bookMapper.getGoodsList(cri);
+		if (type.equals("C")) {
+			String codeSub = cri.getCateCode().substring(0, 3);
+			cri.setCateCode(codeSub);
+			
+		}
 		
+		List<BookVO> list = bookMapper.getGoodsList(cri);
+	
 		list.forEach(book -> {
 			int bookId = book.getBookId();
 			
@@ -64,6 +71,7 @@ public class BookServiceImpl implements BookService{
 			book.setImageList(imageList);
 		
 		});
+
 		
 		return list;
 	}
@@ -73,6 +81,13 @@ public class BookServiceImpl implements BookService{
 	public int goodsGetTotal(Criteria cri) {
 		
 		log.info("goodsGetTotal().......");
+		
+		String type = cri.getType();
+		
+		if(type == "C") {
+			String codeSub = cri.getCateCode().substring(0, 3);
+			cri.setCateCode(codeSub);
+		}
 		
 		return bookMapper.goodsGetTotal(cri);
 		
@@ -106,14 +121,16 @@ public class BookServiceImpl implements BookService{
 		String[] authorArr;
 		
 		for(String type : typeArr) {
-			
 			if(type.equals("A")) {
+				
 				authorArr = bookMapper.getAuthorIdList(cri.getKeyword());
+				
 				if(authorArr.length == 0) {
 					return filterInfoList;
-				}
+				} 
+				
 				cri.setAuthorArr(authorArr);
-			}
+			} 
 			
 		}
 		
@@ -124,6 +141,9 @@ public class BookServiceImpl implements BookService{
 		for(String cateCode : cateList) {
 			cri.setCateCode(cateCode);
 			CateFilterDTO filterInfo = bookMapper.getCateInfo(cri);
+			if(cri.getType().equals("A")) {
+				cri.setAuthorArr(null);
+			}
 			filterInfoList.add(filterInfo);
 		}
 		

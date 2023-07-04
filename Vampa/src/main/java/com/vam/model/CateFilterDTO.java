@@ -16,11 +16,11 @@ public class CateFilterDTO {
 	
 	private int cateCount;
 	
-	private String cateGroup;
+	private String cateCode;
 	
 	
 	@Setter(AccessLevel.PROTECTED)
-	private String cateCode;
+	private String cateGroup;
 	public void setCateCode(String cateCode) {
 		this.cateCode = cateCode;
 		this.cateGroup = cateCode.split("")[0];

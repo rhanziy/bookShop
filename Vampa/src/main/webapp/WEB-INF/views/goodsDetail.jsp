@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="/resources/css/header.css">
 <link rel="stylesheet" href="/resources/css/footer.css">
 <link rel="stylesheet" href="/resources/css/goodsDetail.css">
+<script src="https://kit.fontawesome.com/734a7daae5.js" crossorigin="anonymous"></script>
 </head>
 <body>
 	
@@ -95,6 +96,20 @@
 						</span>
 					</c:if>
 				</div>
+				
+				<div class="reply_content">
+					<div class="reply_not_div">
+						
+					</div>
+					<ul>
+						
+					</ul>
+					<div class="reply_pageInfo_div">
+						<ul class="pageMaker">
+						
+						</ul>
+					</div>
+				</div>
 			</div>
 			
 			
@@ -159,9 +174,152 @@
 			pointCalc(price, salePrice);
 			
 			
+			/* 리뷰 표출 작업 */
+			const bookId = '${goodsInfo.bookId}';
 			
+			$.getJSON("/reply/list", {bookId : bookId}, function(obj){
+				makeReplyContent(obj);
+			});
 			
 		});
+		
+		
+		/* 댓글 페이지 정보 */
+		const cri = {
+			bookId : '${goodsInfo.bookId}',
+			pageNum : 1,
+			amount : 10
+		}
+		
+		let replyListInit = function(){
+			$.getJSON("/reply/list", cri, function(obj){
+				makeReplyContent(obj);
+			});
+			
+		}
+		
+		$(document).on("click", '.pageMaker_btn a', function(e){
+			e.preventDefault();
+			let page = $(this).attr("href");
+			cri.pageNum = page;
+			
+			replyListInit();
+		});
+		
+		$(document).on("click", ".update_reply_btn", function(e){
+			e.preventDefault();
+			let replyId = $(this).attr("href");
+			let popUrl = "/replyUpdate?replyId=" + replyId + "&bookId=" + '${goodsInfo.bookId}' + "&memberId=" + '${member.memberId}';
+			let popOption = "width=490px, height=490px, top=300px, left=300px, scrollbars=yes"
+		
+			window.open(popUrl, "리뷰 수정", popOption);
+		});
+		
+		$(document).on("click", ".delete_reply_btn", function(e){
+			e.preventDefault();
+			let replyId = $(this).attr("href");
+			
+			$.ajax({
+				data : {
+					replyId : replyId,
+					bookId : '${goodsInfo.bookId}'
+				},
+				url : '/reply/delete',
+				type : 'POST',
+				success : function(result){
+					replyListInit();
+					alert('삭제가 완료되었습니다.');
+				}
+			});
+		});
+		
+		/* 댓글(리뷰) 동적 생성 메서드 */
+		function makeReplyContent(obj){
+			
+			if(obj.list.length === 0){
+				$(".reply_not_div").css('display','block');
+				$(".reply_not_div").html('<span>등록된 리뷰가 없습니다.</span>');
+				$(".reply_content ul").html('');
+				$(".pageMaker").html('');
+			} else {
+				
+				$(".reply_not_div").css('display','none');
+				
+				const list = obj.list;
+				const pf = obj.pageInfo;
+				const userId = '${member.memberId}';
+				
+
+				let reply_list = '';
+				
+				$(list).each(function(i, obj){
+					
+					let rating = Math.floor(obj.rating);
+					let star = '&#xf005';
+ 					
+					reply_list += '<li>';
+					reply_list += '<div class="comment_wrap">';
+					reply_list += '<div class="reply_top">';
+					
+					// 아이디
+					reply_list += '<span class="id_span">' + obj.memberId + '</span>';
+					
+					//날짜
+					reply_list += '<span class="date_span">' + obj.regDate + '</span>';
+					
+					//평점
+						reply_list += '<span class="rating_span">평점 : <span class="rating_value_span">'+ star.repeat(rating) +'</span></span>'; 
+					
+					if(obj.memberId === userId){
+						reply_list += '<a class="update_reply_btn" href="'+ obj.replyId +'">수정</a><a class="delete_reply_btn" href="'+ obj.replyId +'">삭제</a>';
+					}			  
+					
+					reply_list += '</div>'; //<div class="reply_top">
+					reply_list += '<div class="reply_bottom">';
+					reply_list += '<div class="reply_bottom_txt">'+ obj.content +'</div>';
+					reply_list += '</div>';//<div class="reply_bottom">
+					reply_list += '</div>';//<div class="comment_wrap">
+					reply_list += '</li>';
+								  
+				});
+				
+				
+				$('.reply_content ul').html(reply_list);
+				
+				
+				/* 페이지 버튼 */
+				let reply_pageMaker = '';
+				
+				/* prev */
+				if(pf.prev){
+					let prev_num = pf.pageStart -1;
+					reply_pageMaker += '<li class="pageMaker_btn prev">';
+					reply_pageMaker += '<a href="'+ prev_num +'">이전</a>';
+					reply_pageMaker += '</li>';	
+				}
+				/* number btn */
+				for(let i = pf.pageStart; i < pf.pageEnd+1; i++){
+					reply_pageMaker += '<li class="pageMaker_btn ';
+					if(pf.cri.pageNum === i){
+						reply_pageMaker += 'active';
+					}
+					reply_pageMaker += '">';
+					reply_pageMaker += '<a href="'+i+'">'+i+'</a>';
+					reply_pageMaker += '</li>';
+				}
+				/* next */
+				if(pf.next){
+					let next_num = pf.pageEnd +1;
+					reply_pageMaker += '<li class="pageMaker_btn next">';
+					reply_pageMaker += '<a href="'+ next_num +'">다음</a>';
+					reply_pageMaker += '</li>';	
+				}			
+				
+				$(".pageMaker").html(reply_pageMaker);
+				
+			}
+			
+		}
 		
 		
 		let quantity = $(".quantity_input").val();

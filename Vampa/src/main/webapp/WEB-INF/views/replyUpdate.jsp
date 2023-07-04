@@ -52,7 +52,7 @@
 	    font-size: 14px;
 	    line-height: 18px;  	
   	}
-  	.enroll_btn{
+  	.update_btn{
    	    display: inline-block;
 	    width: 130px;
 	    background-color: #808080;
@@ -114,7 +114,7 @@
 <body>
 	<div class="wrapper_div">
 		<div class="subject_div">
-			리뷰 등록
+			리뷰 수정
 		</div>
 		<div class="input_wrap">			
 			<div class="bookName_div">
@@ -123,71 +123,82 @@
 			<div class="rating_div">
 				<h4>평점</h4>
 				<select name="rating">
-					<option value="1.0">
+					<option value="1">
 						&#xf005
 					</option>
-					<option value="2.0">
+					<option value="2">
 						&#xf005 &#xf005
 					</option>
-					<option value="3.0">
+					<option value="3">
 						&#xf005 &#xf005 &#xf005
 					</option>
-					<option value="4.0">
+					<option value="4">
 						&#xf005 &#xf005 &#xf005 &#xf005
 					</option>
-					<option value="5.0">
+					<option value="5">
 						&#xf005 &#xf005 &#xf005 &#xf005 &#xf005
 					</option>
 				</select>
 			</div>
 			<div class="content_div">
 				<h4>리뷰</h4>
-				<textarea name="content"></textarea>
+				<textarea name="content">${replyInfo.content }</textarea>
 			</div>
 		</div>
 		<div class="btn_wrap">
-			<a class="cancel_btn">취소</a><a class="enroll_btn">등록</a>
+			<a class="cancel_btn">취소</a><a class="update_btn">수정</a>
 		</div>
 	</div>
 	<script>
 		
-		$('.cancel_btn').on('click', function(){
-			window.close();
-		});
-		
-		$(".enroll_btn").on('click', function(e){
+		$(document).ready(function(){
 			
-			const bookId = '${bookInfo.bookId}';
+			let rating = '${replyInfo.rating}';
+			
+			$("option").each(function(i, obj){
+				
+				if(rating === $(obj).val()){
+					$(obj).attr("selected", "selected");
+				}
+				
+			});
+				
+		});
+
+			
+		$(".cancel_btn").on("click",function(){
+			window.close();
+		});	
+			
+		$(".update_btn").on("click",function(){
+			
+			const replyId = '${replyInfo.replyId}';
+			const bookId = '${replyInfo.bookId}';
 			const memberId = '${memberId}';
-			const rating = $("select").val();
+			const rating = $('select').val();
 			const content = $("textarea").val();
 			
-			console.log(rating);
 			
 			const data = {
-					
-				bookId : bookId,
-				memberId : memberId,
-				rating : rating,
-				content : content
+					replyId : replyId,
+					bookId : bookId,
+					memberId : memberId,
+					rating : rating,
+					content : content
 			}
 			
 			$.ajax({
 				data : data,
 				type : 'POST',
-				url : '/reply/enroll',
+				url : '/reply/update',
 				success : function(result){
-					
 					$(opener.location).attr("href", "javascript:replyListInit();");
-					
-					alert("리뷰 등록이 완료되었습니다.");
 					window.close();
 				}
-				
 			});
 			
 		});
-	
+		
 	</script>
 </body>
 </html>

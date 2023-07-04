@@ -17,6 +17,9 @@ public class Criteria {
   
   private String cateCode;
   
+  /* 상품 번호(댓글 기능에서 사용) */
+  private int bookId;
+  
   public Criteria(int pageNum, int amount) {
     this.pageNum = pageNum;
     this.amount = amount;
@@ -89,8 +92,17 @@ public class Criteria {
     this.cateCode = cateCode;
   }
   
+	public int getBookId() {
+		return this.bookId;
+	}
+	
+	public void setBookId(int bookId) {
+		this.bookId = bookId;
+	}
+  
+  
   public String toString() {
     return "Criteria [pageNum=" + this.pageNum + ", amount=" + this.amount + ", type=" + this.type + ", keyword=" + this.keyword + 
-      ", authorArr=" + Arrays.toString((Object[])this.authorArr) + ", cateCode=" + this.cateCode + "]";
+      ", authorArr=" + Arrays.toString((Object[])this.authorArr) + ", cateCode=" + this.cateCode + ", bookId=" + this.bookId + "]";
   }
 }

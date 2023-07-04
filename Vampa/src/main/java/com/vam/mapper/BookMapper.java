@@ -11,18 +11,16 @@ public interface BookMapper {
 
 	/* 상품 검색 */
 	public List<BookVO> getGoodsList(Criteria cri);
-	
+		
 	/* 상품 총 갯수 */
 	public int goodsGetTotal(Criteria cri);		
 	
 	/* 작가 id 리스트 요청 */
 	public String[] getAuthorIdList(String keyword);	
 	
-	
 	public List<CateVO> getCateCode1();
 	
 	public List<CateVO> getCateCode2();
-	
 	
 	/* 검색 대상 카테고리 리스트 */
 	public String[] getCateList(Criteria cri);

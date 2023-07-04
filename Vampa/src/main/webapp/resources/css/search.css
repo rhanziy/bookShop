@@ -1,11 +1,12 @@
 @charset "UTF-8";
 
 
+
 .table_empty{
 		height: 50px;
 	    text-align: center;
-	    margin: 200px 0 215px 0px;
 	    font-size: 25px;
+	    padding-top:200px;
 	}
 	/* 상품 표 */
 	.list_search_result{
@@ -55,7 +56,8 @@
 		text-align: center;
 	    margin-top: 30px;
 	    margin-bottom: 40px;
-	    user-select:none
+	    user-select:none;
+	    
 	}
 	.pageMaker{
 	    list-style: none;
@@ -72,7 +74,8 @@
 		border : 2px solid black;
 		font-weight:400;
 	}
-	.next, .prev {
+	.pageMaker_btn.next, .pageMaker_btn.prev {
+		float:left;
 	    border: 1px solid #ccc;
 	    padding: 0 10px;
 	}
@@ -128,7 +131,6 @@
 	}
 	
 	.filter_content{
-		height:40px;
 		border-bottom: 1px solid gray;
 		text-align:center;
 		overflow:hidden;

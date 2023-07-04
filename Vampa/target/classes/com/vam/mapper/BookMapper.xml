@@ -39,14 +39,18 @@
 		           (select authorName from vam_author where vam_book.authorId = vam_author.authorId) authorName, authorId,
 		           (select cateName from vam_bcate where vam_book.cateCode = vam_bcate.cateCode) cateName,cateCode, publisher, publeYear, bookPrice, bookDiscount  
 	          from vam_book
-	         where
-	        	   <include refid="criteria"></include>
+	         where <include refid="criteria"></include>
 	        	   rownum <![CDATA[ <= ]]> #{pageNum} * #{amount}
 			)
 		where rn <![CDATA[ > ]]> (#{pageNum} -1) * #{amount} 
 	
 	</select>
 	
+	<select id="getGoodsList2" resultType="com.vam.model.BookVO">
+	
+	
+	</select>
+		
 	<select id="goodsGetTotal" resultType="int">
 		
 		select count(*) from vam_book
@@ -66,14 +70,13 @@
 		<!-- 국내 카테고리 리스트 -->
 	<select id="getCateCode1" resultType="com.vam.model.CateVO">
 	
-		
-			select * from vam_bcate where cateCode <![CDATA[>]]> 100000 and cateCode <![CDATA[<]]> 200000
+			select * from vam_bcate where cateParent <![CDATA[=]]> 100000 
 	</select>
 	
 	<!-- 외국 카테고리 리스트 -->
 	<select id="getCateCode2" resultType="com.vam.model.CateVO">
 	
-			select * from vam_bcate where cateCode <![CDATA[>]]> 200000 and cateCode <![CDATA[<]]> 300000
+			select * from vam_bcate where cateParent <![CDATA[=]]> 200000 
 	
 	</select>	
 	
@@ -108,13 +111,15 @@
 		 <foreach item="type" collection="typeArr">
 		 	<choose>
 		 		<when test="type == 'A'.toString()">
-		 			<trim prefix="(" suffix=")" prefixOverrides="or">
-		 				<foreach collection="authorArr" item="authorId">
-		 					<trim prefix="or">
-		 						authorId = #{authorId}
-		 					</trim>
-		 				</foreach>
-		 			</trim>
+		 			<if test="keyword != null">
+			 			<trim prefix="(" suffix=")" prefixOverrides="or">
+			 				<foreach collection="authorArr" item="authorId">
+			 					<trim prefix="or">
+			 						authorId = #{authorId}
+			 					</trim>
+			 				</foreach>
+			 			</trim>
+		 			</if>
 		 		</when>
 		 		<when test="type == 'T'.toString()">
 		 			bookName like '%' || #{keyword} || '%' and a.cateCode = #{cateCode}

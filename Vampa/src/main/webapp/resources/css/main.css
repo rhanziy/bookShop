@@ -4,6 +4,7 @@
 button {
 	border:none;
 	outline:none;
+	cursor: pointer;
 }
 /* 제품 목록 네비 */
 .navi_bar_area{
@@ -36,6 +37,7 @@ button {
   display:none;
   position: absolute;
   background:white;
+  text-align:left;
   z-index: 1;
 }
 
@@ -66,6 +68,45 @@ button {
     margin-top:50px;
 }
 
+
+#carouselCon {
+	position:relative;
+	width:100%;
+}
+
+.carousel-box{
+	width:768px;
+	margin:0 auto;
+	overflow:hidden;
+}
+.carousel-inner {
+	display:flex;
+	width:100%;
+	margin:0 auto;
+	transform: translateX(0);
+	transition: transform 0.2s;
+}
+
+.carousel-inner img {
+	width:100%;
+}
+
+.main_prev {
+	position:absolute;
+	top:47%;
+	left: 30px;
+	font-size:40px;
+	background:none;
+	color:#c0c0c0;
+}
+.main_next {
+	position:absolute;
+	top:47%;
+	right: 30px;
+	font-size:40px;
+	background:none;
+	color:#c0c0c0;
+}
 
 /* float 속성 해제 */
 .clearfix{

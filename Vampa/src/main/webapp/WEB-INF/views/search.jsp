@@ -26,16 +26,13 @@
 						<button class="filter_button filter_active" id="filter_button_a">국내</button>
 						<button class="filter_button" id="filter_button_b">외국</button>
 					</div>	
-					
+					<div>${filter_info}</div>
 					<div class="filter_content filter_a">
 						<c:forEach items="${filter_info}" var="filter">
 							<c:choose>
 								<c:when test="${filter.cateGroup eq '1'}">
 									<a href="${filter.cateCode}">${filter.cateName}(${filter.cateCount})</a>
 								</c:when>
-								<c:otherwise>
-									<a> 없음 </a>
-								</c:otherwise>
 							</c:choose>
 						</c:forEach>
 					</div>
@@ -45,9 +42,6 @@
 								<c:when test="${filter.cateGroup eq '2'}">
 									<a href="${filter.cateCode}">${filter.cateName}(${filter.cateCount})</a>
 								</c:when>
-								<c:otherwise>
-									<a> 없음 </a>
-								</c:otherwise>
 							</c:choose>
 						</c:forEach>
 					</div>	
@@ -57,6 +51,7 @@
 						<input type="hidden" name="cateCode">
 						<input type="hidden" name="type">
 					</form>		
+					
 					
 				</div>
 				
@@ -122,7 +117,6 @@
 				<!-- 페이지 이동 인터페이스 -->
 				<div class="pageMaker_wrap">
 					<ul class="pageMaker">
-	                			
 						<!-- 이전 버튼 -->
 						<c:if test="${pageMaker.prev }">
 	               			<li class="pageMaker_btn prev">
@@ -191,6 +185,10 @@
 		
 		moveForm.find("input[name='pageNum']").val($(this).attr("href"));
 		
+		if('${pageMaker.cri.type}' == 'C'){
+			moveForm.append('<input type="hidden" name="cateCode" value="${pageMaker.cri.cateCode}">');	
+		}
+	
 		moveForm.submit();
 		
 	});
@@ -222,6 +220,8 @@
 			}
 			
 		});
+		
+		
 	});
 
 	
@@ -251,7 +251,7 @@
 			type = type + 'C';
 		}
 		
-		let keyword = '<c:out value="${pageMaker.cri.keyword}"/>'
+		let keyword = '<c:out value="${pageMaker.cri.keyword}"/>';
 		let cateCode = $(this).attr("href");
 		
 		$("#filter_form input[name='keyword']").val(keyword);

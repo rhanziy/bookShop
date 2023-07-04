@@ -39,14 +39,13 @@
 		           (select authorName from vam_author where vam_book.authorId = vam_author.authorId) authorName, authorId,
 		           (select cateName from vam_bcate where vam_book.cateCode = vam_bcate.cateCode) cateName,cateCode, publisher, publeYear, bookPrice, bookDiscount  
 	          from vam_book
-	         where
-	        	   <include refid="criteria"></include>
+	         where <include refid="criteria"></include>
 	        	   rownum <![CDATA[ <= ]]> #{pageNum} * #{amount}
 			)
 		where rn <![CDATA[ > ]]> (#{pageNum} -1) * #{amount} 
 	
 	</select>
-	
+		
 	<select id="goodsGetTotal" resultType="int">
 		
 		select count(*) from vam_book
@@ -63,5 +62,81 @@
 	
 	</select>
 	
+		<!-- 국내 카테고리 리스트 -->
+	<select id="getCateCode1" resultType="com.vam.model.CateVO">
 	
+			select * from vam_bcate where cateParent <![CDATA[=]]> 100000 
+	</select>
+	
+	<!-- 외국 카테고리 리스트 -->
+	<select id="getCateCode2" resultType="com.vam.model.CateVO">
+	
+			select * from vam_bcate where cateParent <![CDATA[=]]> 200000 
+	
+	</select>	
+	
+	
+	<select id="getCateList" resultType="String">
+	
+		select DISTINCT cateCode from vam_book where
+			<foreach item="type" collection="typeArr">
+				<choose>
+					<when test="type == 'A'.toString()">
+						<trim prefixOverrides="or">
+							<foreach collection="authorArr" item="authorId">
+								<trim prefix="or">
+									authorId = #{authorId}
+								</trim>
+							</foreach>
+						</trim>						
+					</when>
+					<when test="type=='T'.toString()">
+						bookName like '%' || #{keyword} || '%'
+					</when>
+				</choose>
+			</foreach>
+	</select>
+	
+	
+	<select id="getCateInfo" resultType="com.vam.model.CateFilterDTO">
+	
+		select DISTINCT count(*) cateCount, a.cateCode, b.cateName
+		  from vam_book a left join vam_bcate b on a.cateCode = b.cateCode
+		 where 
+		 <foreach item="type" collection="typeArr">
+		 	<choose>
+		 		<when test="type == 'A'.toString()">
+		 			<trim prefix="(" suffix=")" prefixOverrides="or">
+		 				<foreach collection="authorArr" item="authorId">
+		 					<trim prefix="or">
+		 						authorId = #{authorId}
+		 					</trim>
+		 				</foreach>
+		 			</trim>
+		 		</when>
+		 		<when test="type == 'T'.toString()">
+		 			bookName like '%' || #{keyword} || '%' and a.cateCode = #{cateCode}
+		 		</when>
+		 	</choose>
+		 </foreach>
+		group by a.cateCode, b.cateName
+	</select>
+	
+	
+	<select id="getGoodsInfo" resultType="com.vam.model.BookVO">
+		
+		select a.bookId, a.bookName, a.authorId, b.authorName, a.publeYear, a.publisher, a.cateCode, c.cateName, a.bookPrice, a.bookStock, a.bookDiscount, a.bookIntro, a.bookContents
+		  from vam_book a left outer join vam_author b on a.authorId = b.authorId
+ 	   		left outer join vam_bcate c on a.cateCode = c.cateCode
+		 where bookId = ${bookId}
+		
+	</select>
+	
+	
+	<select id="getBookIdName" resultType="com.vam.model.BookVO">
+	
+		select bookId, bookName from vam_book
+		 where bookId = #{bookId}
+		
+	</select>
   </mapper>
