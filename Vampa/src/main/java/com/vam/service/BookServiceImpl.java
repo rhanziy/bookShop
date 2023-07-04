@@ -141,9 +141,11 @@ public class BookServiceImpl implements BookService{
 		for(String cateCode : cateList) {
 			cri.setCateCode(cateCode);
 			CateFilterDTO filterInfo = bookMapper.getCateInfo(cri);
+			
 			if(cri.getType().equals("A")) {
 				cri.setAuthorArr(null);
 			}
+			
 			filterInfoList.add(filterInfo);
 		}
 		
