@@ -26,7 +26,6 @@
 						<button class="filter_button filter_active" id="filter_button_a">국내</button>
 						<button class="filter_button" id="filter_button_b">외국</button>
 					</div>	
-					<div>${filter_info}</div>
 					<div class="filter_content filter_a">
 						<c:forEach items="${filter_info}" var="filter">
 							<c:choose>

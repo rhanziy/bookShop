@@ -97,7 +97,7 @@
 				</choose>
 			</foreach>
 	</select>
-	
+		
 	
 	<select id="getCateInfo" resultType="com.vam.model.CateFilterDTO">
 	
@@ -107,15 +107,14 @@
 		 <foreach item="type" collection="typeArr">
 		 	<choose>
 		 		<when test="type == 'A'.toString()">
-		 			<if test="keyword != null">
-			 			<trim prefix="(" suffix=")" prefixOverrides="or">
-			 				<foreach collection="authorArr" item="authorId">
-			 					<trim prefix="or">
-			 						authorId = #{authorId}
-			 					</trim>
-			 				</foreach>
-			 			</trim>
-		 			</if>
+		 			<trim prefix="(" suffix=")" prefixOverrides="or">
+		 				<foreach collection="authorArr" item="authorId">
+		 					<trim prefix="or">
+		 						authorId = #{authorId}
+		 					</trim>
+		 				</foreach>
+		 			</trim>
+		 			and a.cateCode = #{cateCode}
 		 		</when>
 		 		<when test="type == 'T'.toString()">
 		 			bookName like '%' || #{keyword} || '%' and a.cateCode = #{cateCode}
