@@ -52,7 +52,7 @@ public class BookController {
 		
 		model.addAttribute("cate1", bookService.getCateCode1());
 		model.addAttribute("cate2", bookService.getCateCode2());
-		
+		model.addAttribute("ls", bookService.likeSelect());
 		
 	}
 	
@@ -116,14 +116,10 @@ public class BookController {
 		
 		model.addAttribute("pageMaker", new PageDTO(cri, bookService.goodsGetTotal(cri)));
 		
-		String[] typeArr = cri.getType().split("");
+//		String[] typeArr = cri.getType().split("");
 		
-		for(String s : typeArr) {
-			if(s.equals("A")|| s.equals("T")) {
-				
-				model.addAttribute("filter_info", bookService.getCateInfoList(cri));
-			} 
-		}
+		
+		model.addAttribute("filter_info", bookService.getCateInfoList(cri));
 		
 		
 		return "search";

@@ -246,7 +246,7 @@
 		e.preventDefault();
 		
 		let type = '<c:out value="${pageMaker.cri.type}"/>';
-		if(type === 'A' || type === 'T') {
+		if(type === 'A' || type === 'T' || type === 'M') {
 			type = type + 'C';
 		}
 		

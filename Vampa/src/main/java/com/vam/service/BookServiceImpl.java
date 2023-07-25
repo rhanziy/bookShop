@@ -14,6 +14,7 @@ import com.vam.model.BookVO;
 import com.vam.model.CateFilterDTO;
 import com.vam.model.CateVO;
 import com.vam.model.Criteria;
+import com.vam.model.SelectDTO;
 
 import lombok.extern.log4j.Log4j;
 
@@ -45,7 +46,6 @@ public class BookServiceImpl implements BookService{
 		if(type.equals("A") || type.equals("AC") || type.equals("AT") || type.equals("ACT")) {
 			if(authorArr.length == 0) {
 				return new ArrayList();
-				
 			}
 		}
 		
@@ -55,13 +55,13 @@ public class BookServiceImpl implements BookService{
 			}
 		}		
 		
-		if (type.equals("C")) {
+		if(type.equals("M")) {
 			String codeSub = cri.getCateCode().substring(0, 3);
 			cri.setCateCode(codeSub);
-			
 		}
 		
 		List<BookVO> list = bookMapper.getGoodsList(cri);
+		
 	
 		list.forEach(book -> {
 			int bookId = book.getBookId();
@@ -119,6 +119,7 @@ public class BookServiceImpl implements BookService{
 		
 		String[] typeArr = cri.getType().split("");
 		String[] authorArr;
+		String[] cateList = bookMapper.getCateList(cri);
 		
 		for(String type : typeArr) {
 			if(type.equals("A")) {
@@ -130,15 +131,19 @@ public class BookServiceImpl implements BookService{
 				} 
 				
 				cri.setAuthorArr(authorArr);
-			} 
+			}
 			
 		}
 		
-		String[] cateList = bookMapper.getCateList(cri);
 		
 		String tempCateCode = cri.getCateCode();
 		
 		for(String cateCode : cateList) {
+			
+			if(cri.getType() == "M") {
+				cri.setCateCode(cateCode.substring(0, 3));
+			}
+			
 			cri.setCateCode(cateCode);
 			
 			CateFilterDTO filterInfo = bookMapper.getCateInfo(cri);
@@ -168,5 +173,22 @@ public class BookServiceImpl implements BookService{
 	@Override
 	public BookVO getBookIdName(int bookId) {
 		return bookMapper.getBookIdName(bookId);
+	}
+	
+	
+	@Override
+	public List<SelectDTO> likeSelect() {
+		
+		List<SelectDTO> list = bookMapper.likeSelect();
+		
+		list.forEach(dto -> {
+			int bookId = dto.getBookId();
+			
+			List<AttachImageVO> imageList = attachMapper.getAttachList(bookId);
+			
+			dto.setImageList(imageList);
+		});
+		
+		return list;
 	}
 }
