@@ -57,7 +57,7 @@
 				
 			<div class="ls_wrap">
 				<div class="ls_div_subject">
-					평점순 상품
+					평점순 추천 도서
 				</div>
 				<div class="ls_div">
 					<c:forEach items="${ls}" var="ls">

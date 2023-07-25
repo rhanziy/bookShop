@@ -118,7 +118,6 @@ public class BookController {
 		
 //		String[] typeArr = cri.getType().split("");
 		
-		
 		model.addAttribute("filter_info", bookService.getCateInfoList(cri));
 		
 		
