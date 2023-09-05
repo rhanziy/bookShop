@@ -1,6 +1,7 @@
 ### 📚 bookShop 프로젝트
 KimVamPa님의 Tistory 블로그 스프링 프레임워크/쇼핑몰 프로젝트를 따라서 만들었습니다.(https://url.kr/2xnkjp )
 관리자계정으로 작가와 책을 관리하고 회원은 등록된 책을 검색하여 구매할 수 있는 사이트입니다.
+<br/><br/>
 <img src="https://github.com/rhanziy/bookShop/assets/95859342/b79f09bc-981a-467b-8c3d-8ea3490bb28b" width="600" height="500"/>
 
 ### ⏰ 개발기간
