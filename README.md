@@ -28,7 +28,7 @@ KimVamPa님의 Tistory 블로그 스프링 프레임워크/쇼핑몰 프로젝�
 3. 회원은 상품 검색을 할 수 있고 카테고리에 따라 원하는 상품을 읽을 수 있습니다.
 <br/><br/>
 <img src="https://github.com/rhanziy/bookShop/assets/95859342/4addde0a-9d70-42bb-9143-50cc93900c0d" width="500" height="300"/>
-<img src="https://github.com/rhanziy/bookShop/assets/95859342/33496bd1-a62d-4343-ad4e-095c80986bea" width="400" height="200"/>
+<img src="https://github.com/rhanziy/bookShop/assets/95859342/33496bd1-a62d-4343-ad4e-095c80986bea" width="500" height="200"/>
 <br/><br/><br/>
 4. 회원은 원하는 상품을 장바구니에 담고 포인트를 사용해 주문할 수 있습니다.
 <br/><br/>
